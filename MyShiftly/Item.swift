@@ -10,9 +10,13 @@ import SwiftData
 
 @Model
 final class Item {
-    var timestamp: Date
+    var startTime: Date
+    var endTime: Date
+    var hourlyRate: Double
     
-    init(timestamp: Date) {
-        self.timestamp = timestamp
+    init(startTime: Date, endTime: Date, hourlyRate: Double) {
+        self.startTime = startTime
+        self.endTime = endTime
+        self.hourlyRate = hourlyRate
     }
 }

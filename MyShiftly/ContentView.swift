@@ -14,13 +14,14 @@ struct ContentView: View {
     @Query private var items: [Item]
 
     var body: some View {
-        NavigationSplitView {
+        NavigationStack {
             List {
                 ForEach(items) { item in
                     NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
+                        SheetViewUpdate(currentShift: item)
                     } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+                        Text("Am: \(item.startTime, format: Date.FormatStyle(date: .numeric))")
+                        Text("Tageslohn \(countHourlyRate(start: item.startTime, end: item.endTime, hourlyRate: item.hourlyRate))")
                     }
                 }
                 .onDelete(perform: deleteItems)
@@ -35,9 +36,22 @@ struct ContentView: View {
             .sheet(isPresented: $showingSheet) {
                 SheetView()
             }
-        } detail: {
-            Text("Select an item")
         }
+    }
+
+    private func countHourlyRate(start: Date, end: Date, hourlyRate: Double) -> String {
+        let seconds = end.timeIntervalSince(start)
+        guard seconds > 0 else { return "0,00 €" }
+
+        let hours = seconds / 3600.0
+        let totalEarned = hours * hourlyRate
+
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.currencyCode = "EUR"
+        formatter.locale = Locale(identifier: "de_DE")
+
+        return formatter.string(from: NSNumber(value: totalEarned)) ?? "0,00 €"
     }
 
     private func deleteItems(offsets: IndexSet) {
@@ -60,9 +74,8 @@ struct SheetView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Geben Sie Ihren Stundensatz ein:"){
-                    
-                    TextField("Hello", value: $hourlyRate, format: .currency(code: "EUR") )
+                Section("Geben Sie Ihren Stundensatz ein:") {
+                    TextField("Hello", value: $hourlyRate, format: .currency(code: "EUR"))
                 }
                 Section {
                     DatePicker("Angefangen um: ", selection: $dateTimeWorkStart)
@@ -70,7 +83,7 @@ struct SheetView: View {
                 Section {
                     DatePicker("Beeendet um: ", selection: $dateTimeWorkEnd)
                 }
-                
+
                 Button(action: { addItem() }) {
                     Label("Hinzufügen", systemImage: "checkmark")
                         .frame(maxWidth: .infinity)
@@ -82,13 +95,43 @@ struct SheetView: View {
             }.navigationTitle("Schicht erfassen")
         }
     }
-    
+
     private func addItem() {
         withAnimation {
-            let newItem = Item(timestamp: dateTimeWorkEnd)
+            let newItem = Item(startTime: dateTimeWorkStart, endTime: dateTimeWorkEnd, hourlyRate: hourlyRate)
             modelContext.insert(newItem)
         }
         dismiss()
+    }
+}
+
+struct SheetViewUpdate: View {
+    @Environment(\.dismiss) var dismiss
+    @Bindable var currentShift: Item
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section("Geben Sie Ihren Stundensatz ein:") {
+                    TextField("Hello", value: $currentShift.hourlyRate, format: .currency(code: "EUR"))
+                }
+                Section {
+                    DatePicker("Angefangen um: ", selection: $currentShift.startTime)
+                }
+                Section {
+                    DatePicker("Beeendet um: ", selection: $currentShift.endTime)
+                }
+
+                Button(action: { dismiss() }) {
+                    Label("Speichern", systemImage: "checkmark")
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color(.systemBlue))
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+            }.navigationTitle("Schicht bearbeiten")
+        }
     }
 }
 
