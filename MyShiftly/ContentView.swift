@@ -11,30 +11,43 @@ import SwiftUI
 struct ContentView: View {
     @State private var showingSheet = false
     @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
-
+    @Query private var timeEntrys: [TimeEntry]
+    @State private var hourlyRate = 13.90
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        SheetViewUpdate(currentShift: item)
-                    } label: {
-                        Text("Am: \(item.startTime, format: Date.FormatStyle(date: .numeric))")
-                        Text("Tageslohn \(countHourlyRate(start: item.startTime, end: item.endTime, hourlyRate: item.hourlyRate))")
+            VStack {
+                HStack {
+                    Text("Aktueller Stundenlohn")
+                    TextField("Hello", value: $hourlyRate, format: .currency(code: "EUR"))
+                        .frame(width: 70, height: 40)
+                        .padding(.horizontal, 8)
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.gray, lineWidth: 1)
+                        )
+                }
+                List {
+                    ForEach(timeEntrys) { timeEntry in
+                        NavigationLink {
+                            TimeEntryEditorView(timeEntry: timeEntry)
+                        } label: {
+                            VStack(alignment: .leading) {
+                                Text("Am: \(timeEntry.startTime, format: Date.FormatStyle(date: .numeric)) \(countHourlyRate(start: timeEntry.startTime, end: timeEntry.endTime, hourlyRate: hourlyRate))")
+                            }
+                        }
+                    }
+                    .onDelete(perform: deleteItems)
+                }
+                .toolbar {
+                    ToolbarItem(placement: .primaryAction) {
+                        Button(action: { showingSheet.toggle() }) {
+                            Label("Add Item", systemImage: "plus")
+                        }
                     }
                 }
-                .onDelete(perform: deleteItems)
-            }
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    Button(action: { showingSheet.toggle() }) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
-            .sheet(isPresented: $showingSheet) {
-                SheetView()
+                .sheet(isPresented: $showingSheet) {
+                    TimeEntryEditorView()
+                }.navigationTitle("Schichten")
             }
         }
     }
@@ -57,85 +70,13 @@ struct ContentView: View {
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
             for index in offsets {
-                modelContext.delete(items[index])
+                modelContext.delete(timeEntrys[index])
             }
-        }
-    }
-}
-
-struct SheetView: View {
-    @Environment(\.dismiss) var dismiss
-    @State private var dateTimeWorkStart = Date.now.addingTimeInterval(-12600)
-    @State private var dateTimeWorkEnd = Date.now
-    @State private var hourlyRate = 12.00
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                Section("Geben Sie Ihren Stundensatz ein:") {
-                    TextField("Hello", value: $hourlyRate, format: .currency(code: "EUR"))
-                }
-                Section {
-                    DatePicker("Angefangen um: ", selection: $dateTimeWorkStart)
-                }
-                Section {
-                    DatePicker("Beeendet um: ", selection: $dateTimeWorkEnd)
-                }
-
-                Button(action: { addItem() }) {
-                    Label("Hinzufügen", systemImage: "checkmark")
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color(.systemBlue))
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                }
-            }.navigationTitle("Schicht erfassen")
-        }
-    }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(startTime: dateTimeWorkStart, endTime: dateTimeWorkEnd, hourlyRate: hourlyRate)
-            modelContext.insert(newItem)
-        }
-        dismiss()
-    }
-}
-
-struct SheetViewUpdate: View {
-    @Environment(\.dismiss) var dismiss
-    @Bindable var currentShift: Item
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                Section("Geben Sie Ihren Stundensatz ein:") {
-                    TextField("Hello", value: $currentShift.hourlyRate, format: .currency(code: "EUR"))
-                }
-                Section {
-                    DatePicker("Angefangen um: ", selection: $currentShift.startTime)
-                }
-                Section {
-                    DatePicker("Beeendet um: ", selection: $currentShift.endTime)
-                }
-
-                Button(action: { dismiss() }) {
-                    Label("Speichern", systemImage: "checkmark")
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color(.systemBlue))
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                }
-            }.navigationTitle("Schicht bearbeiten")
         }
     }
 }
 
 #Preview {
     ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
+        .modelContainer(for: TimeEntry.self, inMemory: true)
 }
