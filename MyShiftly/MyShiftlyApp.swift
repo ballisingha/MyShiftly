@@ -14,6 +14,6 @@ struct MyShiftlyApp: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(for: [TimeEntry.self])
+        .modelContainer(for: [Shift.self])
     }
 }

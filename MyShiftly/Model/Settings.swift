@@ -8,22 +8,26 @@
 import Foundation
 import SwiftData
 
-@Model final class Settings: PersistentModel {
+@Model final class Settings {
+    // Unique identifier ensures only one Settings object exists
     @Attribute(.unique) var id: String
+    
     var name: String
-    var hourlyWage: Decimal
-    var miniJobLimit: Decimal
+    
+    // Store monetary values as Double for SwiftData compatibility
+    // We'll use NumberFormatter for display to avoid floating-point display issues
+    var hourlyWage: Double
+    var miniJobLimit: Double
     var currency: String
+    
     var workingHoursPerWeek: Double?
-    var taxRate: Double?
     
     init(
         name: String,
-        hourlyWage: Decimal,
-        miniJobLimit: Decimal = 538.00,
+        hourlyWage: Double,
+        miniJobLimit: Double = 538.00,
         currency: String = "EUR",
         workingHoursPerWeek: Double? = nil,
-        taxRate: Double? = nil
     ) {
         self.id = "app_settings"
         self.name = name
@@ -31,10 +35,28 @@ import SwiftData
         self.miniJobLimit = miniJobLimit
         self.currency = currency
         self.workingHoursPerWeek = workingHoursPerWeek
-        self.taxRate = taxRate
     }
 }
 
+// MARK: - Computed Properties
+extension Settings {
+    /// Currency formatter for displaying monetary values with correct locale
+    var currencyFormatter: NumberFormatter {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.currencyCode = currency
+        formatter.minimumFractionDigits = 2
+        formatter.maximumFractionDigits = 2
+        return formatter
+    }
+    
+    /// Formats a Double value as a currency string
+    func formatCurrency(_ value: Double) -> String {
+        return currencyFormatter.string(from: NSNumber(value: value)) ?? "\(value)"
+    }
+}
+
+// MARK: - Data Loading
 extension Settings {
     static func loadOrCreate(in context: ModelContext) -> Settings {
         let descriptor = FetchDescriptor<Settings>()
@@ -45,11 +67,10 @@ extension Settings {
         
         let defaultSettings = Settings(
             name: "",
-            hourlyWage: Decimal(12.41),
-            miniJobLimit: Decimal(538.00),
+            hourlyWage: 12.41,
+            miniJobLimit: 538.00,
             currency: "EUR",
             workingHoursPerWeek: nil,
-            taxRate: nil
         )
         
         context.insert(defaultSettings)
