@@ -64,7 +64,6 @@ struct ShiftView: View {
                     }
 
                     Button(action: {
-                        // Action for adding a new shift
                     }) {
                         Text("April 2026")
                             .font(.subheadline)
@@ -98,7 +97,8 @@ struct ShiftView: View {
                 }
                 List {
                     ForEach(groupedShifts.keys.sorted().reversed(), id: \.self) { month in
-                        Section("\(month) - \(groupedShifts[month]!.count) Schichten - \(monthSum.formatted(.currency(code: Locale.current.currency?.identifier ?? "EUR")))") {
+                        Section("\(month) - \(groupedShifts[month]!.count) Schichten - " +
+                                "\(monthSum.formatted(.currency(code: Locale.current.currency?.identifier ?? "EUR")))") {
                             ForEach(groupedShifts[month]!) { shift in
                                 ShiftRow(shift: shift, hourlywage: settings.hourlyWage)
                             }
@@ -109,14 +109,15 @@ struct ShiftView: View {
         }
     }
 }
-// swiftlint:disable line_length force_try
+
 #Preview {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    let container = try! ModelContainer(for: Shift.self, configurations: config)
+    guard let container = try? ModelContainer(for: Shift.self, configurations: config) else {
+        return Text("Preview failed")
+    }
 
     Shift.previewList.forEach { container.mainContext.insert($0) }
 
     return ShiftView()
         .modelContainer(container)
 }
-// swiftlint:enable line_length force_try

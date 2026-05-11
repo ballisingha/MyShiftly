@@ -15,7 +15,8 @@ disabled_rules:
   - todo                    # TODOs sind während Entwicklung erlaubt
   - force_unwrapping        # In SwiftUI/Previews oft nötig
   - force_try               # In Previews und Tests akzeptabel
-
+  - multiple_closures_with_trailing_closure
+  
 # ── Zusätzliche Regeln die aktiviert sind ───────────────────
 opt_in_rules:
   - empty_count             # .count == 0 → besser .isEmpty verwenden

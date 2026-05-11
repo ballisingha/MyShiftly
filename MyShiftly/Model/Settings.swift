@@ -52,7 +52,7 @@ extension Settings {
 
     /// Formats a Double value as a currency string
     func formatCurrency(_ value: Double) -> String {
-        return currencyFormatter.string(from: NSNumber(value: value)) ?? "\(value)"
+        currencyFormatter.string(from: NSNumber(value: value)) ?? "\(value)"
     }
 }
 

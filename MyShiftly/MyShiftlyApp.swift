@@ -4,9 +4,8 @@
 //
 //  Created by Guriqbal Singh Amroke on 14.02.26.
 //
-
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 @main
 struct MyShiftlyApp: App {
