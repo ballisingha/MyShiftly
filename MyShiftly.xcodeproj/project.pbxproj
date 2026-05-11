@@ -54,6 +54,7 @@
 			buildPhases = (
 				9FA6C6C12F40BEF600509FAB /* Sources */,
 				9FC427AE2FB2835100E6CA70 /* ShellScript */,
+				9FC427FA2FB297B000E6CA70 /* ShellScript */,
 				9FA6C6C22F40BEF600509FAB /* Frameworks */,
 				9FA6C6C32F40BEF600509FAB /* Resources */,
 			);
@@ -133,6 +134,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\n\nif which swiftlint > /dev/null; then\n  swiftlint --config \"${SRCROOT}/swiftlint.yml\" \"${SRCROOT}\"\nelse\n  echo \"warning: SwiftLint not installed\"\nfi\n";
+		};
+		9FC427FA2FB297B000E6CA70 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\n\nif which swiftformat > /dev/null; then\n  swiftformat --lint \"${SRCROOT}\"\nelse\n  echo \"warning: SwiftFormat not installed, run: brew install swiftformat\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

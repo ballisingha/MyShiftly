@@ -21,7 +21,6 @@ struct ShiftRow: View {
         let hours = shift.workingTime / 3600
 
         HStack(spacing: 14) {
-
             RoundedRectangle(cornerRadius: 10)
                 .fill(Color.blue.opacity(0.15))
                 .frame(width: 36, height: 36)

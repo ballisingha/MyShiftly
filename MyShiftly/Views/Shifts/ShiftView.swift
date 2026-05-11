@@ -111,12 +111,8 @@ struct ShiftView: View {
 
 #Preview {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    guard let container = try? ModelContainer(for: Shift.self, configurations: config) else {
-        return Text("Preview failed")
-    }
-
+    let container = try! ModelContainer(for: Shift.self, configurations: config)
     Shift.previewList.forEach { container.mainContext.insert($0) }
-
     return ShiftView()
         .modelContainer(container)
 }
