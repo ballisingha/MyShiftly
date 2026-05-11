@@ -1,0 +1,50 @@
+name: iOS CI
+ 
+on:
+  push:
+    branches:
+      - main
+      - master
+      - develop
+      - 'feature/**'
+      - 'hotfix/**'
+      - 'release/**'
+  pull_request:
+    branches:
+      - main
+      - master
+      - develop
+ 
+jobs:
+  build:
+    name: Build and Lint MyShiftly
+    runs-on: macos-latest
+ 
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+ 
+      - name: SwiftLint
+        run: |
+          brew install swiftlint
+          swiftlint lint --strict
+ 
+      - name: SwiftFormat Check
+        run: |
+          brew install swiftformat
+          swiftformat --lint .
+ 
+      - name: Build
+        run: |
+          xcodebuild build \
+            -scheme "MyShiftly" \
+            -destination "platform=iOS Simulator,name=iPhone 16,OS=latest" \
+            CODE_SIGNING_ALLOWED=NO
+ 
+      # - name: Test
+      #   run: |
+      #     xcodebuild test \
+      #       -scheme "MyShiftly" \
+      #       -destination "platform=iOS Simulator,name=iPhone 16,OS=latest" \
+      #       CODE_SIGNING_ALLOWED=NO
+ 
