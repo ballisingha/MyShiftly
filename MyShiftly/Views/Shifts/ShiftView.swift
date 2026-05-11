@@ -97,8 +97,7 @@ struct ShiftView: View {
                 List {
                     ForEach(groupedShifts.keys.sorted().reversed(), id: \.self) { month in
                         Section("\(month) - \(groupedShifts[month]!.count) Schichten - " +
-                            "\(monthSum.formatted(.currency(code: Locale.current.currency?.identifier ?? "EUR")))")
-                        {
+                            "\(monthSum.formatted(.currency(code: Locale.current.currency?.identifier ?? "EUR")))") {
                             ForEach(groupedShifts[month]!) { shift in
                                 ShiftRow(shift: shift, hourlywage: settings.hourlyWage)
                             }
