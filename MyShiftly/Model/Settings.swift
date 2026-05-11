@@ -11,17 +11,17 @@ import SwiftData
 @Model final class Settings {
     // Unique identifier ensures only one Settings object exists
     @Attribute(.unique) var id: String
-    
+
     var name: String
-    
+
     // Store monetary values as Double for SwiftData compatibility
     // We'll use NumberFormatter for display to avoid floating-point display issues
     var hourlyWage: Double
     var miniJobLimit: Double
     var currency: String
-    
+
     var workingHoursPerWeek: Double?
-    
+
     init(
         name: String,
         hourlyWage: Double,
@@ -49,7 +49,7 @@ extension Settings {
         formatter.maximumFractionDigits = 2
         return formatter
     }
-    
+
     /// Formats a Double value as a currency string
     func formatCurrency(_ value: Double) -> String {
         return currencyFormatter.string(from: NSNumber(value: value)) ?? "\(value)"
@@ -60,11 +60,11 @@ extension Settings {
 extension Settings {
     static func loadOrCreate(in context: ModelContext) -> Settings {
         let descriptor = FetchDescriptor<Settings>()
-        
+
         if let existing = try? context.fetch(descriptor).first {
             return existing
         }
-        
+
         let defaultSettings = Settings(
             name: "",
             hourlyWage: 12.41,
@@ -72,15 +72,15 @@ extension Settings {
             currency: "EUR",
             workingHoursPerWeek: nil,
         )
-        
+
         context.insert(defaultSettings)
-        
+
         do {
             try context.save()
         } catch {
             print("Error saving default settings: \(error)")
         }
-        
+
         return defaultSettings
     }
 }

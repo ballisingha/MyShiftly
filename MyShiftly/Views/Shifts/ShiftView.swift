@@ -11,7 +11,7 @@ import SwiftUI
 struct ShiftView: View {
     @Environment(\.modelContext) private var context // ← Punkt fehlte!
     @Query(sort: \Shift.startTime, order: .reverse) var shifts: [Shift]
-        
+
     var settings: Settings {
         Settings.loadOrCreate(in: context)
     }
@@ -21,14 +21,14 @@ struct ShiftView: View {
             shift.startTime.formatted(.dateTime.month(.wide).year())
         }
     }
-        
+
     var monthSum: Double {
         let currentMonth = Date.now.formatted(.dateTime.month(.wide).year())
         return shifts
             .filter { $0.startTime.formatted(.dateTime.month(.wide).year()) == currentMonth }
             .reduce(0) { $0 + $1.workingTime / 3600 * settings.hourlyWage }
     }
-    
+
     var body: some View {
         NavigationStack {
             VStack {
@@ -50,7 +50,7 @@ struct ShiftView: View {
                     }
                     .padding(.trailing)
                 }
-                
+
                 HStack {
                     Button(action: {
                         // Action for adding a new shift
@@ -62,7 +62,7 @@ struct ShiftView: View {
                             .foregroundColor(.white)
                             .clipShape(.capsule)
                     }
-                    
+          
                     Button(action: {
                         // Action for adding a new shift
                     }) {
@@ -73,7 +73,7 @@ struct ShiftView: View {
                             .foregroundColor(.white)
                             .clipShape(.capsule)
                     }
-                    
+
                     Button(action: {
                         // Action for adding a new shift
                     }) {
@@ -84,7 +84,7 @@ struct ShiftView: View {
                             .foregroundColor(.white)
                             .clipShape(.capsule)
                     }
-                    
+
                     Button(action: {
                         // Action for adding a new shift
                     }) {
@@ -109,14 +109,14 @@ struct ShiftView: View {
         }
     }
 }
-
+// swiftlint:disable line_length force_try
 #Preview {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
     let container = try! ModelContainer(for: Shift.self, configurations: config)
-    
-    // Testdaten hinzufügen
+
     Shift.previewList.forEach { container.mainContext.insert($0) }
-    
+
     return ShiftView()
         .modelContainer(container)
 }
+// swiftlint:enable line_length force_try
