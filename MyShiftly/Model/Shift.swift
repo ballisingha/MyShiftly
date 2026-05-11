@@ -20,7 +20,9 @@ import SwiftData
     /// Optional notes about the shift
     var notes: String
     var isNfc: Bool = false
+
     // MARK: - Computed Properties
+
     /// Total duration of the shift (including breaks)
     var duration: TimeInterval {
         endTime.timeIntervalSince(startTime)
@@ -37,6 +39,7 @@ import SwiftData
     }
 
     // MARK: - Initialization
+
     init(
         startTime: Date,
         endTime: Date,

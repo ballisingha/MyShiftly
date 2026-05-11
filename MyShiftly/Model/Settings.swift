@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model final class Settings {
-    // Unique identifier ensures only one Settings object exists
+    /// Unique identifier ensures only one Settings object exists
     @Attribute(.unique) var id: String
 
     var name: String
@@ -27,7 +27,7 @@ import SwiftData
         hourlyWage: Double,
         miniJobLimit: Double = 538.00,
         currency: String = "EUR",
-        workingHoursPerWeek: Double? = nil,
+        workingHoursPerWeek: Double? = nil
     ) {
         self.id = "app_settings"
         self.name = name
@@ -39,6 +39,7 @@ import SwiftData
 }
 
 // MARK: - Computed Properties
+
 extension Settings {
     /// Currency formatter for displaying monetary values with correct locale
     var currencyFormatter: NumberFormatter {
@@ -57,6 +58,7 @@ extension Settings {
 }
 
 // MARK: - Data Loading
+
 extension Settings {
     static func loadOrCreate(in context: ModelContext) -> Settings {
         let descriptor = FetchDescriptor<Settings>()
@@ -70,7 +72,7 @@ extension Settings {
             hourlyWage: 12.41,
             miniJobLimit: 538.00,
             currency: "EUR",
-            workingHoursPerWeek: nil,
+            workingHoursPerWeek: nil
         )
 
         context.insert(defaultSettings)
