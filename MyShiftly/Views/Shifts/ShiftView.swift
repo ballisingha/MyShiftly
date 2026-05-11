@@ -62,7 +62,7 @@ struct ShiftView: View {
                             .foregroundColor(.white)
                             .clipShape(.capsule)
                     }
-          
+
                     Button(action: {
                         // Action for adding a new shift
                     }) {
