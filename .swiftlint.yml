@@ -1,0 +1,57 @@
+# ============================================================
+# SwiftLint Konfiguration für MyShiftly
+# Datei liegt im Root des Projekts (neben MyShiftly.xcodeproj)
+# ============================================================
+
+# ── Ordner die SwiftLint ignorieren soll ────────────────────
+excluded:
+  - .build                  # SPM Build-Artefakte
+  - DerivedData             # Xcode Build-Artefakte
+  - Pods                    # Falls CocoaPods jemals genutzt wird
+
+# ── Regeln die deaktiviert sind ─────────────────────────────
+disabled_rules:
+  - trailing_whitespace     # Zu aggressiv, stört beim Tippen in Xcode
+  - todo                    # TODOs sind während Entwicklung erlaubt
+  - force_unwrapping        # In SwiftUI/Previews oft nötig
+  - force_try               # In Previews und Tests akzeptabel
+  - multiple_closures_with_trailing_closure
+  
+# ── Zusätzliche Regeln die aktiviert sind ───────────────────
+opt_in_rules:
+  - empty_count             # .count == 0 → besser .isEmpty verwenden
+  - implicit_return         # Erlaubt kurze Funktionen ohne explizites return
+  - sorted_imports          # Import-Statements alphabetisch sortiert
+
+# ── Längenlimits ────────────────────────────────────────────
+line_length:
+  warning: 150              # Warnung ab 150 Zeichen
+  error: 250                # Fehler ab 250 Zeichen (SwiftUI Views können lang sein)
+  ignores_comments: true    # Kommentare zählen nicht
+
+function_body_length:
+  warning: 60               # Funktionen über 60 Zeilen → Warnung
+  error: 120                # Über 120 Zeilen → Fehler
+
+type_body_length:
+  warning: 200              # Klassen/Structs über 200 Zeilen → Warnung
+  error: 350                # Über 350 → Fehler
+
+file_length:
+  warning: 400              # Dateien über 400 Zeilen → Warnung
+  error: 600                # Über 600 → Fehler
+
+# ── Namensregeln ────────────────────────────────────────────
+type_name:
+  min_length: 3             # Mindestens 3 Zeichen (verhindert z.B. "VC")
+  max_length: 50            # Maximal 50 Zeichen
+
+identifier_name:
+  min_length: 2             # Mindestens 2 Zeichen (erlaubt z.B. "id")
+  max_length: 50
+  excluded:                 # Kurze Namen die erlaubt sind
+    - id
+    - x
+    - y
+    - i
+    - db
