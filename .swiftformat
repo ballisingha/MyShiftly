@@ -1,3 +1,9 @@
+
 --disable indent
+
 --disable wrapMultilineStatementBraces
+
 --disable numberFormatting
+
+--disable trailingCommas
+
