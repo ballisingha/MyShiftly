@@ -21,10 +21,10 @@ extension Shift {
                 breaks: []
             ),
             Shift(
-                startTime: .now.addingTimeInterval(-172800),
-                endTime: .now.addingTimeInterval(-172800 + 3600 * 2),
+                startTime: .now.addingTimeInterval(-172_800),
+                endTime: .now.addingTimeInterval(-172_800 + 3600 * 2),
                 breaks: []
-            )
+            ),
         ]
     }
 }

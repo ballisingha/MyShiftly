@@ -29,7 +29,7 @@ import SwiftData
         currency: String = "EUR",
         workingHoursPerWeek: Double? = nil
     ) {
-        self.id = "app_settings"
+        id = "app_settings"
         self.name = name
         self.hourlyWage = hourlyWage
         self.miniJobLimit = miniJobLimit

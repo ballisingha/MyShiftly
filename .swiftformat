@@ -1,1 +1,3 @@
 --disable indent
+--disable wrapMultilineStatementBraces
+--disable numberFormatting
